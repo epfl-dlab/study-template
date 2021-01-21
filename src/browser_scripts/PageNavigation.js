@@ -27,12 +27,12 @@ export async function runStudy({
                                    privateWindows = false
                                }) {
 
-    storage = await (new Storage.KeyValueStorage("WebScience.Measurements.PageNavigation")).initialize();
+    storage = await (new Storage.KeyValueStorage("PageNavigation")).initialize();
     urlMatcher = new Matching.UrlMatcher(domains);
 
     // Listen for metadata of the visited pages from content script
     // Use a unique identifier for each webpage the user visits that has a matching domain
-    var nextPageIdCounter = await (new Storage.Counter("WebScience.Measurements.PageNavigation.nextPageId")).initialize();
+    var nextPageIdCounter = await (new Storage.Counter("PageNavigation.nextPageId")).initialize();
 
     // Keep track of information about pages with matching domains that are currently loaded into a tab
     // If a tab ID is in this object, the page currently contained in that tab has a matching domain
@@ -146,7 +146,7 @@ export async function runStudy({
 
     // Store whether the Navigation study is running in private windows in extension
     // local storage, so that it is available to content scripts
-    await browser.storage.local.set({"WebScience.Measurements.PageNavigation.privateWindows": privateWindows});
+    await browser.storage.local.set({"PageNavigation.privateWindows": privateWindows});
 }
 
 /* Utilities */
