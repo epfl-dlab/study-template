@@ -10,6 +10,11 @@ const debugLog = Debugging.getDebuggingLog("HTTPRequests");
  */
 var storage = null;
 
+
+/**
+ * This sets a listener to get out outgoing http requests made to the youtube api.
+ * @returns {Promise<void>}
+ */
 export async function runStudy() {
 
     storage = await (new Storage.KeyValueStorage("HTTPRequests")).initialize();
@@ -29,20 +34,6 @@ export async function runStudy() {
         browser.webRequest.onBeforeRequest.addListener(getStats, {urls: ["*://*.youtube.com/api/stats/*"]}
     );
 
-}
-
-/* Utilities */
-
-/**
- * Retrieve the study data as an object. Note that this could be very
- * slow if there is a large volume of study data.
- * @returns {(Object|null)} - The study data, or `null` if no data
- * could be retrieved.
- */
-export async function getStudyDataAsObject() {
-    if (storage != null)
-        return await storage.getContentsAsObject();
-    return null;
 }
 
 /* Utilities */
