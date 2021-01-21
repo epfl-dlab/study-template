@@ -10,7 +10,7 @@
       overwriteDest: true,
     },
     run: {
-      firefox: "nightly",
+      // firefox: "nightly",
       pref: ["extensions.experiments.enabled=true"],
     },
     ignoreFiles: [

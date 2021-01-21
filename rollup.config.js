@@ -18,17 +18,5 @@ export default () => {
       }),
       commonjs(),
     ],
-  },
-  {
-    input: "src/content-script.js",
-    output: {
-      file: "dist/content-script.js"
-    },
-    plugins: [
-      resolve({
-        browser: true,
-      }),
-      commonjs(),
-    ],
-  },
+  }
 ]};

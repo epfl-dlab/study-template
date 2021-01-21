@@ -1,26 +1,37 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
-
 window.browser = require("webextension-polyfill");
 
-const Rally = require("@mozilla/rally");
-const rally = new Rally();
+/* Loads WebScience stuff */
+const WebScienceDebugging = require("../WebScience/Utilities/Debugging.js");
+WebScienceDebugging.enableDebugging();
+let debugLog = WebScienceDebugging.getDebuggingLog("study");
+const WebScienceLifecycle = require("../WebScience/Utilities/Lifecycle.js");
 
-// ... Add more implementation here!
+/* Loads browser scripts*/
+const PageNavigation = require("./browser_scripts/PageNavigation.js");
 
-const ExampleModule = require('./ExampleModule');
-ExampleModule.initialize();
+/* Creates partial functions to send data, done to modularize the send data stuff */
+const sd = require("./send_data.js");
+const sendPageNavigation = () => {
+    return sd.senddata("pagenav",
+        PageNavigation.getStudyDataAsObjectAndClear)
+};
 
-rally.initialize(
-  // A sample key id used for encrypting data.
-  "sample-invalid-key-id",
-  // A sample *valid* JWK object for the encryption.
-  {
-    "kty":"EC",
-    "crv":"P-256",
-    "x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
-    "y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
-    "kid":"Public key used in JWS spec Appendix A.3 example"
-  }
-);
+function stopStudy() {
+    // TODO -- send Telemetry message to delete remote data, and uninstall
+    debugLog("Ending study");
+}
+
+async function runStudy() {
+
+    // Configure navigation collection
+    PageNavigation.runStudy({
+        domains: ["youtube.com"],
+        trackUserAttention: true
+    });
+
+    setInterval(sendPageNavigation, 10000);
+}
+
+WebScienceLifecycle.registerStudyStartedListener(runStudy);
+WebScienceLifecycle.registerStudyEndedListener(stopStudy);
+WebScienceLifecycle.requestBegin();

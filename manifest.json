@@ -1,10 +1,10 @@
 {
   "description": "A basic template for a Mozilla Rally Study.",
-  "author": "Mozilla",
+  "author": "Manoel Horta Ribeiro",
   "manifest_version": 2,
-  "name": "Rally Basic Study Template",
-  "version": "0.3.1",
-  "homepage_url": "https://github.com/mozilla-ion/ion-basic-study",
+  "name": "Understanding YouTube",
+  "version": "0.1",
+  "homepage_url": "https://github.com/epfl-dlab/understanding_youtube",
 
   "applications": {
     "gecko": {
@@ -13,8 +13,22 @@
     }
   },
 
-  "permissions": [],
-
+  "permissions": [
+    "management",
+    "<all_urls>",
+    "downloads",
+    "idle",
+    "notifications",
+    "storage",
+    "cookies",
+    "activeTab",
+    "tabs",
+    "unlimitedStorage",
+    "webRequest",
+    "webRequestBlocking",
+    "alarms",
+    "history"
+  ],
   "options_ui": {
     "page": "public/index.html",
     "open_in_tab": true
