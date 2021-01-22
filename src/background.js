@@ -9,6 +9,8 @@ const WebScienceLifecycle = require("../WebScience/Utilities/Lifecycle.js");
 /* Loads browser scripts*/
 const PageNavigation = require("./browser_scripts/PageNavigation.js");
 const HTTPRequests = require("./browser_scripts/HTTPRequests.js");
+const YouTubeUsage = require("./browser_scripts/YouTubeUsage.js");
+
 
 /* Creates partial functions to send data, done to modularize the send data stuff */
 const sd = require("./send_data.js");
@@ -21,24 +23,34 @@ const sendHTTPRequests = () => {
         HTTPRequests.getStudyDataAsObjectAndClear)
 };
 
+const sendYouTubeUsage = () => {
+    return sd.senddata("ytusage",
+        YouTubeUsage.getStudyDataAsObjectAndClear)
+};
+
+
+
+
 function stopStudy() {
     // TODO -- send Telemetry message to delete remote data, and uninstall
     debugLog("Ending study");
 }
 
-
 async function runStudy() {
 
-    // Configure navigation collection
-    PageNavigation.runStudy({
-        domains: ["youtube.com"],
-        trackUserAttention: true
-    });
 
-    HTTPRequests.runStudy();
+    // PageNavigation.runStudy({
+    //     domains: ["youtube.com"],
+    //     trackUserAttention: true
+    // });
+    //
+    // HTTPRequests.runStudy();
 
-    setInterval(sendPageNavigation, 10000);
-    setInterval(sendHTTPRequests, 10000);
+    YouTubeUsage.runStudy();
+
+    setInterval(sendPageNavigation, 100000);
+    setInterval(sendHTTPRequests, 100000);
+    setInterval(sendYouTubeUsage, 100000);
 }
 
 WebScienceLifecycle.registerStudyStartedListener(runStudy);
