@@ -29,8 +29,6 @@ const sendYouTubeUsage = () => {
 };
 
 
-
-
 function stopStudy() {
     // TODO -- send Telemetry message to delete remote data, and uninstall
     debugLog("Ending study");
@@ -39,14 +37,14 @@ function stopStudy() {
 async function runStudy() {
 
 
-    // PageNavigation.runStudy({
-    //     domains: ["youtube.com"],
-    //     trackUserAttention: true
-    // });
-    //
-    // HTTPRequests.runStudy();
+    await PageNavigation.runStudy({
+        domains: ["youtube.com"],
+        trackUserAttention: true
+    });
 
-    YouTubeUsage.runStudy();
+    await HTTPRequests.runStudy();
+
+    await YouTubeUsage.runStudy();
 
     setInterval(sendPageNavigation, 100000);
     setInterval(sendHTTPRequests, 100000);

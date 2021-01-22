@@ -163,9 +163,7 @@ export async function getStudyDataAsObjectAndClear() {
     if (storage != null) {
 
         await storage.iterate((value, key, iterationNumber) => {
-            // console.log(value)
             if (value["visitEnd"] != -1) {
-                // console.log("add to remove", key);
                 arr.push(key);
                 let tmp = JSON.stringify(value);
                 output[key] = tmp;
@@ -173,7 +171,6 @@ export async function getStudyDataAsObjectAndClear() {
         });
 
         for (let v in arr) {
-            // console.log("removed", arr[v]);
             storage.storageInstance.removeItem(arr[v]).then().catch(function (err) {
                 // This code runs if there were any errors
                 console.log(err);

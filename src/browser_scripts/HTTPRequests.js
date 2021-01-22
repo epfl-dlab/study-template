@@ -57,7 +57,6 @@ export async function getStudyDataAsObjectAndClear() {
         });
 
         for (let v in arr) {
-            // console.log("removed", arr[v]);
             storage.storageInstance.removeItem(arr[v]).then().catch(function (err) {
                 // This code runs if there were any errors
                 console.log(err);

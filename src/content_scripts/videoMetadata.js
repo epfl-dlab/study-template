@@ -1,6 +1,5 @@
 (
     async function () {
-        console.log("vmd7");
 
         /** @constant {number} milliseconds */
         const waitMs = 2000;
@@ -56,7 +55,6 @@
 
         function sendMetadataEvent(loadtime, title, likes, dislikes, description, channel_link,
                                    channel_name, date, views, genre, url_src, metadata_dict_raw) {
-            console.log("title");
             browser.runtime.sendMessage({
                 type: "videoMetaData",
                 loadTime: loadtime,
