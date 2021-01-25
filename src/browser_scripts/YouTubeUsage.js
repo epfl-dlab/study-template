@@ -4,6 +4,7 @@ import * as Messaging from "../../WebScience/Utilities/Messaging.js"
 
 const debugLog = Debugging.getDebuggingLog("YouTubeUsage");
 
+
 /**
  * A KeyValueStorage object for data associated with the study.
  * @type {Object}
@@ -18,7 +19,7 @@ var storage = null;
 export async function runStudy() {
     storage = await (new Storage.KeyValueStorage("YouTubeUsage")).initialize();
     // Add the content script for checking links on pages
-
+    debugLog("YouTubeUsage.js");
 
     /** Click data **/
 

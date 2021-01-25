@@ -36,7 +36,6 @@ function stopStudy() {
 
 async function runStudy() {
 
-
     await PageNavigation.runStudy({
         domains: ["youtube.com"],
         trackUserAttention: true
@@ -46,9 +45,9 @@ async function runStudy() {
 
     await YouTubeUsage.runStudy();
 
-    setInterval(sendPageNavigation, 100000);
-    setInterval(sendHTTPRequests, 100000);
-    setInterval(sendYouTubeUsage, 100000);
+    setInterval(sendPageNavigation, 10000);
+    setInterval(sendHTTPRequests, 10000);
+    setInterval(sendYouTubeUsage, 10000);
 }
 
 WebScienceLifecycle.registerStudyStartedListener(runStudy);

@@ -2,47 +2,66 @@ import * as Debugging from "../../WebScience/Utilities/Debugging.js"
 import * as Storage from "../../WebScience/Utilities/Storage.js"
 
 const debugLog = Debugging.getDebuggingLog("HTTPRequests");
-
-/**
- * A KeyValueStorage object for data associated with the study.
- * @type {Object}
- * @private
- */
 var storage = null;
 
-
-/**
- * This sets a listener to get out outgoing http requests made to the youtube api.
- * @returns {Promise<void>}
- */
 export async function runStudy() {
+    debugLog("HTTPRequests.js");
 
     storage = await (new Storage.KeyValueStorage("HTTPRequests")).initialize();
 
     async function getStats(requestDetails) {
-        console.log("Loading: " + requestDetails.url);
+
         let url_string = requestDetails.url;
-        let url = new URL(url_string);
+        let raw = JSON.stringify(requestDetails);
+        // let url = new URL(url_string);
         let date = Date.now();
-        let schema_v = {
-            raw: url_string,
-            date: date
+
+        let decoder = new TextDecoder("utf-8");
+        let encoder = new TextEncoder();
+        var filter = browser.webRequest.filterResponseData(requestDetails.requestId);
+
+        let data = [];
+        filter.ondata = event => {
+            data.push(event.data);
         };
-        storage.set(date.toString(), schema_v);
+
+        filter.onstop = event => {
+            let str = "";
+            if (data.length == 1) {
+                str = decoder.decode(data[0]);
+            } else {
+                for (let i = 0; i < data.length; i++) {
+                    let stream = (i == data.length - 1) ? false : true;
+                    str += decoder.decode(data[i], {stream});
+                }
+            }
+            // filter.write(str);
+            let response = str;
+            filter.write(encoder.encode(str));
+            filter.close();
+
+            let schema_v = {
+                url_string: url_string,
+                date: date,
+                raw: raw,
+                response: response
+            };
+
+
+            // console.log(schema_v);
+            storage.set(date.toString() + url_string, schema_v);
+        };
     }
 
-        browser.webRequest.onBeforeRequest.addListener(getStats, {urls: ["*://*.youtube.com/api/stats/*"]}
-    );
+    browser.webRequest.onBeforeRequest.addListener(getStats,
+        {
+            urls: ["*://*.youtube.com/api/stats/*",
+                "*://*.youtube.com/youtubei/v1/*"]
+        }, ["blocking"]);
 
 }
 
-/* Utilities */
 
-/**
- * Retrieve the study data as an object. Clears sessions that are already complete.
- * @returns {(Object|null)} - The study data, or `null` if no data
- * could be retrieved.
- */
 export async function getStudyDataAsObjectAndClear() {
     let output = {};
     let arr = [];

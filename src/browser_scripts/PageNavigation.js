@@ -11,7 +11,6 @@ var storage = null;
 var currentTabInfo = null;
 var urlMatcher = null;
 
-
 /**
  * Start a navigation study. Note that only one study is supported per extension.
  * @param {Object} options - A set of options for the study.
@@ -26,6 +25,7 @@ export async function runStudy({
                                    trackUserAttention = false,
                                    privateWindows = false
                                }) {
+    debugLog("PageNavigation.js");
 
     storage = await (new Storage.KeyValueStorage("PageNavigation")).initialize();
     urlMatcher = new Matching.UrlMatcher(domains);
