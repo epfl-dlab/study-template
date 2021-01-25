@@ -1,16 +1,14 @@
 (
     async function () {
-        console.log("asdasda213sd");
+        console.log("clicksYouTube.js");
         var currentPageClicksYouTube = null;
 
         document.body.addEventListener("mousedown", function (event) {
-            console.log("mousedown");
 
             currentPageClicksYouTube = window.location.href;
         });
 
         document.body.addEventListener("click", function (event) {
-            console.log("click");
             var url_src = currentPageClicksYouTube; //currentPageClicksYouTube;
             let clickTime = Date.now();
             var node = event.target;

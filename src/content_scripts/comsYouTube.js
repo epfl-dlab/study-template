@@ -1,6 +1,6 @@
 (
     async function () {
-        console.log("1231123");
+        console.log("comsYouTube.js");
         /** Comments, obtained through MutationObserver **/
             // Select the node that will be observed for mutations
         const targetNode = document.querySelector('body');
@@ -32,24 +32,33 @@
                             "vote_count": vote_count
                         };
 
-                        console.log(comment);
-
                         let loadTime = Date.now();
 
-                        sendComment(JSON.stringify(comment), loadTime);
+                        let url_src = window.location.href;
+
+                        sendComment(JSON.stringify(comment), loadTime, url_src);
                     }
                 }
             }
         };
 
 
-        function sendComment(comment, time) {
+        function sendComment(comment, time, url_src) {
 
-            browser.runtime.sendMessage({
-                type: "comment",
-                comment: comment,
-                loadTime: time
-            });
+            if (url_src.match(/www\.youtube\.com\/watch\?v/gi) !== null) {
+
+                console.log({
+                    type: "comment",
+                    loadTime: time,
+                    url_src: url_src
+                });
+                browser.runtime.sendMessage({
+                    type: "comment",
+                    comment: comment,
+                    loadTime: time,
+                    url_src: url_src
+                });
+            }
         }
 
         // Create an observer instance linked to the callback function

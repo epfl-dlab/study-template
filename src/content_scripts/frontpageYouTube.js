@@ -1,6 +1,6 @@
 (
     async function () {
-        console.log("123")
+        console.log("frontpageYouTube.js");
         /** @constant {number} milliseconds */
         const waitMs = 2000;
 
@@ -58,6 +58,11 @@
         }
 
         function sendFrontpageEvent(recs, loadtime) {
+            console.log({
+                type: "frontpageYouTube",
+                loadTime: loadtime,
+                recs: recs
+            });
             browser.runtime.sendMessage({
                 type: "frontpageYouTube",
                 loadTime: loadtime,

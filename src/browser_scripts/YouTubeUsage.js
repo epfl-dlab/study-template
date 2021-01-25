@@ -52,7 +52,6 @@ export async function runStudy() {
         js: [{file: "/src/content_scripts/frontpageYouTube.js"}],
         runAt: "document_start"
     });
-
     var rxLookfor = /^https?:\/\/(www\.)?youtube\.com\/?$/;
     browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
             try {
@@ -68,9 +67,6 @@ export async function runStudy() {
     Messaging.registerListener("frontpageYouTube",
         async (message, sender, sendResponse) => {
             debugLog("frontpageYouTube: " + JSON.stringify(message));
-            if (!("tab" in sender)) {
-                debugLog("Warning: unexpected social media account exposure update");
-            }
             storage.set(Date.now().toString() + "_fp", JSON.stringify(message));
         }, {
             type: "string",
@@ -81,7 +77,7 @@ export async function runStudy() {
     /** Video metadata data **/
 
     await browser.contentScripts.register({
-        matches: ["*://*.youtube.com/watch*"],
+        matches: ["*://*.youtube.com/*"],
         js: [
             {file: "/src/content_scripts/videoMetadata.js"},
         ],
@@ -114,8 +110,9 @@ export async function runStudy() {
 
     /** Video recs **/
 
+
     await browser.contentScripts.register({
-        matches: ["*://*.youtube.com/watch*"],
+        matches: ["*://*.youtube.com/*"],
         js: [
             {file: "/src/content_scripts/recsYouTube.js"},
         ],
@@ -133,13 +130,14 @@ export async function runStudy() {
             type: "string",
             loadTime: "number",
             url_src: "string",
-            recs: "string"
+            recs: "string",
+            origin: "string"
         });
 
     /** Video comments **/
 
     await browser.contentScripts.register({
-        matches: ["*://*.youtube.com/watch*"],
+        matches: ["*://*.youtube.com/*"],
         js: [
             {file: "/src/content_scripts/comsYouTube.js"},
         ],
@@ -156,7 +154,30 @@ export async function runStudy() {
         }, {
             type: "string",
             loadTime: "number",
-            comment: "string"
+            comment: "string",
+            url_src: "url_src"
+        });
+
+    /** Video search **/
+
+    await browser.contentScripts.register({
+        matches: ["*://*.youtube.com/*"],
+        js: [
+            {file: "/src/content_scripts/searchYouTube.js"},
+        ],
+        runAt: "document_idle"
+    });
+
+    Messaging.registerListener("search",
+        async (message, sender, sendResponse) => {
+            debugLog("search: " + JSON.stringify(message));
+            storage.set(Date.now().toString() + "_sr", JSON.stringify(message));
+        }, {
+            type: "string",
+            loadTime: "number",
+            search: "string",
+            url_src: "string",
+            origin: "string",
         });
 
 }

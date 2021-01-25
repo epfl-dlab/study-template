@@ -1,23 +1,18 @@
 (
     async function () {
-        const waitMs = 2000;
 
-        document.body.addEventListener("yt-navigate-start", function (event) {
-            setTimeout(getRecs, waitMs);
-        });
-        document.body.addEventListener("yt-navigate-end", function (event) {
-            setTimeout(getRecs, waitMs);
-        });
-        /** sleep and then check for news video */
-        setTimeout(getRecs, waitMs);
+        function resizeObs() {
+            let ro = new ResizeObserver(entries => {
+                getRecs("resize")
+            });
+            ro.observe(document.body.querySelector("div#secondary"));
+        }
 
-        function getRecs() {
-            console.log("gerreck");
+        function getRecs(origin = "load") {
 
             let domLinkElements = Array.from(document.body
                 .querySelectorAll(".ytd-compact-video-renderer .details," +
                     ".ytd-compact-radio-renderer .details"));
-            console.log(domLinkElements);
 
             function getContent(element) {
                 let title = element.querySelector("span").getAttribute("aria-label");
@@ -41,26 +36,44 @@
             let loadtime = Date.now();
 
 
-            console.log(recs);
-
-            sendRecEvent(url_src, loadtime, recs);
+            sendRecEvent(url_src, loadtime, recs, origin);
 
         }
 
-        function sendRecEvent(url_src, loadtime, recs) {
-            console.log({
-                type: "recsYoutube",
-                url_src: url_src,
-                recs: recs,
-                loadTime: loadtime
-            });
-            browser.runtime.sendMessage({
-                type: "recsYoutube",
-                url_src: url_src,
-                recs: recs,
-                loadTime: loadtime
-            });
+        function sendRecEvent(url_src, loadtime, recs, origin) {
+
+            if (url_src.match(/www\.youtube\.com\/watch\?v/gi) !== null) {
+                console.log({
+                    type: "recsYoutube",
+                    url_src: url_src,
+                    recs: origin,
+                    loadTime: loadtime
+                });
+
+
+                browser.runtime.sendMessage({
+                    type: "recsYoutube",
+                    url_src: url_src,
+                    recs: recs,
+                    loadTime: loadtime,
+                    origin: origin
+                });
+            }
         }
+
+        const waitMs = 2000;
+        console.log("recsYouTube.js");
+
+        document.body.addEventListener("yt-navigate-start", function (event) {
+            setTimeout(getRecs, waitMs, "yt-navigate-start");
+        });
+        document.body.addEventListener("yt-navigate-end", function (event) {
+            setTimeout(getRecs, waitMs, "yt-navigate-end");
+        });
+
+        /** sleep and then check for news video */
+        setTimeout(getRecs, waitMs, "load");
+        setTimeout(resizeObs, waitMs);
 
     }()
 );

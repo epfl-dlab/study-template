@@ -1,19 +1,6 @@
 (
     async function () {
-
-        /** @constant {number} milliseconds */
-        const waitMs = 2000;
-
-        document.body.addEventListener("yt-navigate-start", function (event) {
-            setTimeout(getMetadata, waitMs);
-        });
-        document.body.addEventListener("yt-navigate-finish", function (event) {
-            setTimeout(getMetadata, waitMs);
-        });
-
-        setTimeout(getMetadata, waitMs);
-
-        function getMetadata() {
+        function getMetadata(origin = "load") {
             // TODO: ADD EXCEPTIONS
             /* Keywords seem to be obsolete now! Some videos have "hashtags," other don't. Pretty messy */
             // let keywords = null;
@@ -25,6 +12,9 @@
             let description = metadata_dict["description"];
             let genre = metadata_dict["genre"];
             let title = metadata_dict["name"];
+
+
+            let subscriber_button = document.body.querySelector("#content #subscribe-button").innerHTML;
 
             let metadata_dict_raw = JSON.stringify(metadata_dict);
 
@@ -48,30 +38,56 @@
 
             let url_src = window.location.href;
 
-            sendMetadataEvent(loadTime, title, likes, dislikes, description,
+            sendMetadataEvent(loadTime, title, likes, dislikes, description, origin, subscriber_button,
                 channel_link, channel_name, date, views, genre, url_src, metadata_dict_raw)
 
         }
 
-        function sendMetadataEvent(loadtime, title, likes, dislikes, description, channel_link,
-                                   channel_name, date, views, genre, url_src, metadata_dict_raw) {
-            browser.runtime.sendMessage({
-                type: "videoMetaData",
-                loadTime: loadtime,
-                title: title,
-                likes: likes,
-                dislikes: dislikes,
-                description: description,
-                channel_link: channel_link,
-                channel_name: channel_name,
-                date: date,
-                views: views,
-                genre: genre,
-                url_src: url_src,
-                metadata_dict_raw: metadata_dict_raw
-            });
+
+        function sendMetadataEvent(loadtime, title, likes, dislikes, description, origin, subscriber_button,
+                                   channel_link, channel_name, date, views, genre, url_src, metadata_dict_raw) {
+
+
+            if (url_src.match(/www\.youtube\.com\/watch\?v/gi) !== null) {
+
+                console.log({
+                    type: "videoMetaData",
+                    origin: origin,
+                    title: title
+                });
+
+                browser.runtime.sendMessage({
+                    type: "videoMetaData",
+                    origin: origin,
+                    loadTime: loadtime,
+                    title: title,
+                    likes: likes,
+                    dislikes: dislikes,
+                    description: description,
+                    channel_link: channel_link,
+                    channel_name: channel_name,
+                    date: date,
+                    views: views,
+                    genre: genre,
+                    url_src: url_src,
+                    metadata_dict_raw: metadata_dict_raw
+                });
+
+            }
 
         }
 
+
+        console.log("videoMetadata.js");
+
+        const waitMs = 2000;
+        document.body.addEventListener("yt-navigate-start", function (event) {
+            setTimeout(getMetadata, waitMs, "yt-navigate-start");
+        });
+        document.body.addEventListener("yt-navigate-finish", function (event) {
+            setTimeout(getMetadata, waitMs, "yt-navigate-finish");
+        });
+
+        setTimeout(getMetadata, waitMs, "load");
     }()
 );
