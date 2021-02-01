@@ -8,19 +8,19 @@
             // keywords = keywords.map(e => e.getAttribute("content"));
             // keywords = keywords.join(";");
 
-            let metadata_dict = JSON.parse(document.body.querySelector("#scriptTag").textContent);
-            let description = metadata_dict["description"];
-            let genre = metadata_dict["genre"];
-            let title = metadata_dict["name"];
+            const metadata_dict = JSON.parse(document.body.querySelector("#scriptTag").textContent);
+            const description = metadata_dict["description"];
+            const genre = metadata_dict["genre"];
+            const title = metadata_dict["name"];
 
 
-            let subscriber_button = document.body.querySelector("#content #subscribe-button").innerHTML;
+            const subscriber_button = document.body.querySelector("#content #subscribe-button").innerHTML;
 
-            let metadata_dict_raw = JSON.stringify(metadata_dict);
+            const metadata_dict_raw = JSON.stringify(metadata_dict);
 
-            let channel = document.body.querySelector('.ytd-channel-name').querySelector('a');
-            let channel_link = channel.getAttribute("href");
-            let channel_name = channel.textContent;
+            const channel = document.body.querySelector('.ytd-channel-name').querySelector('a');
+            const channel_link = channel.getAttribute("href");
+            const channel_name = channel.textContent;
 
             let views = document.body.querySelector("span.view-count").textContent;
             views = parseInt(views.replace(/[ ,(views)]+/g, "").trim());
@@ -31,12 +31,12 @@
             let likes = document.body.querySelector(".ytd-sentiment-bar-renderer > div.paper-tooltip");
             likes = likes.textContent.trim().replace(/[ ,]+/g, "").split("/");
             likes = likes.map(e => parseInt(e.trim()));
-            let dislikes = likes[1];
+            const dislikes = likes[1];
             likes = likes[0];
 
-            let loadTime = Date.now();
+            const loadTime = Date.now();
 
-            let url_src = window.location.href;
+            const url_src = window.location.href;
 
             sendMetadataEvent(loadTime, title, likes, dislikes, description, origin, subscriber_button,
                 channel_link, channel_name, date, views, genre, url_src, metadata_dict_raw)

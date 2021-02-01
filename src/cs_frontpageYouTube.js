@@ -11,7 +11,7 @@
         });
 
         function checkForVideosFromKnownChannels() {
-            let currentPage = window.location.href;
+            const currentPage = window.location.href;
 
             // prevents matching in video!
             // console.log(currentPage);
@@ -20,7 +20,7 @@
                 return;
             }
 
-            let elems = Array.from(document.body
+            const elems = Array.from(document.body
                 .querySelectorAll("ytd-rich-item-renderer"));
 
             function getContent(element) {
@@ -31,7 +31,7 @@
                 try {
                     title = element.querySelector("yt-formatted-string#video-title")
                         .getAttribute("aria-label");
-                    let channel = element.querySelector("a#avatar-link");
+                    const channel = element.querySelector("a#avatar-link");
                     channel_link = channel.getAttribute("href");
                     channel_name = channel.getAttribute("title");
                     kind = "channel";
@@ -48,10 +48,10 @@
                 return {"title": title, "channel_link": channel_link, "channel_name": channel_name, "kind": kind}
             }
 
-            let r = elems.map(x => getContent(x));
+            const r = elems.map(x => getContent(x));
 
-            let recs = JSON.stringify(r);
-            let loadtime = Date.now();
+            const recs = JSON.stringify(r);
+            const loadtime = Date.now();
 
             sendFrontpageEvent(recs, loadtime)
 

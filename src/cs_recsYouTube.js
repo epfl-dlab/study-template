@@ -2,7 +2,7 @@
     async function () {
 
         function resizeObs() {
-            let ro = new ResizeObserver(entries => {
+            const ro = new ResizeObserver(entries => {
                 getRecs("resize")
             });
             ro.observe(document.body.querySelector("div#secondary"));
@@ -10,7 +10,7 @@
 
         function getRecs(origin = "load") {
 
-            let domLinkElements = Array.from(document.body
+            const domLinkElements = Array.from(document.body
                 .querySelectorAll(".ytd-compact-video-renderer .details," +
                     ".ytd-compact-radio-renderer .details"));
 
@@ -22,18 +22,18 @@
                     kind = "playlist";
                 }
 
-                let link = element.querySelector("a").getAttribute("href");
+                const link = element.querySelector("a").getAttribute("href");
 
 
                 return {"title": title, "link": link, "kind": kind}
             }
 
-            let url_src = window.location.href;
+            const url_src = window.location.href;
 
-            let recs = JSON.stringify(domLinkElements.map(x => getContent(x)));
+            const recs = JSON.stringify(domLinkElements.map(x => getContent(x)));
             //JSON.stringify(domLinkElements.map(x => getContent(x)));
 
-            let loadtime = Date.now();
+            const loadtime = Date.now();
 
 
             sendRecEvent(url_src, loadtime, recs, origin);

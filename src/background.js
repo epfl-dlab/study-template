@@ -2,18 +2,17 @@ window.browser = require("webextension-polyfill");
 
 /* Loads WebScience stuff */
 const WebScienceDebugging = require("../WebScience/Utilities/Debugging.js");
-WebScienceDebugging.enableDebugging();
-let debugLog = WebScienceDebugging.getDebuggingLog("study");
 const WebScienceLifecycle = require("../WebScience/Utilities/Lifecycle.js");
 
+WebScienceDebugging.enableDebugging();
+const debugLog = WebScienceDebugging.getDebuggingLog("study");
+
 /* Loads browser scripts*/
-const PageNavigation = require("./browser_scripts/PageNavigation.js");
-const HTTPRequests = require("./browser_scripts/HTTPRequests.js");
-const YouTubeUsage = require("./browser_scripts/YouTubeUsage.js");
+const PageNavigation = require("./bs_PageNavigation.js");
+const HTTPRequests = require("./bs_HTTPRequests.js");
+const YouTubeUsage = require("./bs_YouTubeUsage.js");
+const sd = require("./bs_SendData.js");
 
-
-/* Creates partial functions to send data, done to modularize the send data stuff */
-const sd = require("./send_data.js");
 const sendPageNavigation = () => {
     return sd.senddata("pagenav",
         PageNavigation.getStudyDataAsObjectAndClear)

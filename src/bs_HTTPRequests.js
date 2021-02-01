@@ -1,8 +1,8 @@
-import * as Debugging from "../../WebScience/Utilities/Debugging.js"
-import * as Storage from "../../WebScience/Utilities/Storage.js"
+import * as Debugging from "../WebScience/Utilities/Debugging.js"
+import * as Storage from "../WebScience/Utilities/Storage.js"
 
 const debugLog = Debugging.getDebuggingLog("HTTPRequests");
-var storage = null;
+let storage = null;
 
 export async function runStudy() {
     debugLog("HTTPRequests.js");
@@ -11,16 +11,16 @@ export async function runStudy() {
 
     async function getStats(requestDetails) {
 
-        let url_string = requestDetails.url;
-        let raw = JSON.stringify(requestDetails);
+        const url_string = requestDetails.url;
+        const raw = JSON.stringify(requestDetails);
         // let url = new URL(url_string);
-        let date = Date.now();
+        const date = Date.now();
 
-        let decoder = new TextDecoder("utf-8");
-        let encoder = new TextEncoder();
-        var filter = browser.webRequest.filterResponseData(requestDetails.requestId);
+        const decoder = new TextDecoder("utf-8");
+        const encoder = new TextEncoder();
+        const filter = browser.webRequest.filterResponseData(requestDetails.requestId);
 
-        let data = [];
+        const data = [];
         filter.ondata = event => {
             data.push(event.data);
         };
@@ -31,16 +31,16 @@ export async function runStudy() {
                 str = decoder.decode(data[0]);
             } else {
                 for (let i = 0; i < data.length; i++) {
-                    let stream = (i == data.length - 1) ? false : true;
+                    const stream = (i == data.length - 1) ? false : true;
                     str += decoder.decode(data[i], {stream});
                 }
             }
             // filter.write(str);
-            let response = str;
+            const response = str;
             filter.write(encoder.encode(str));
             filter.close();
 
-            let schema_v = {
+            const schema_v = {
                 url_string: url_string,
                 date: date,
                 raw: raw,
@@ -63,19 +63,19 @@ export async function runStudy() {
 
 
 export async function getStudyDataAsObjectAndClear() {
-    let output = {};
-    let arr = [];
+    const output = {};
+    const arr = [];
 
     if (storage != null) {
 
         await storage.iterate((value, key, iterationNumber) => {
             arr.push(key);
-            let tmp = JSON.stringify(value);
+            const tmp = JSON.stringify(value);
             output[key] = tmp;
 
         });
 
-        for (let v in arr) {
+        for (const v in arr) {
             storage.storageInstance.removeItem(arr[v]).then().catch(function (err) {
                 // This code runs if there were any errors
                 console.log(err);

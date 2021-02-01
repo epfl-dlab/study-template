@@ -10,9 +10,10 @@
  */
 module.exports.senddata = async function send_data(data_identifier, data_function) {
     const content = await data_function();
-    let payload = {
+    const payload = {
         data_identifier: data_identifier,
-        content: content
+        content: content,
+        who: "me"
     };
 
     // console.log(payload)

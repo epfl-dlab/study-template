@@ -14,7 +14,7 @@
 
             for (const mutation of mutationsList) {
                 if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    var target = mutation.target.querySelector("ytd-comment-renderer");
+                    const target = mutation.target.querySelector("ytd-comment-renderer");
 
                     if (target != null && target != undefined) {
                         let vote_count = -1;
@@ -24,7 +24,7 @@
                             vote_count = 0
                         }
 
-                        let comment = {
+                        const comment = {
                             "source_url": window.location.href,
                             "author_link": target.querySelector("a#author-text").getAttribute("href"),
                             "author_text": target.querySelector("a#author-text").textContent.trim(),
@@ -32,9 +32,9 @@
                             "vote_count": vote_count
                         };
 
-                        let loadTime = Date.now();
+                        const loadTime = Date.now();
 
-                        let url_src = window.location.href;
+                        const url_src = window.location.href;
 
                         sendComment(JSON.stringify(comment), loadTime, url_src);
                     }

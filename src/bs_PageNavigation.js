@@ -1,15 +1,15 @@
-import * as Debugging from "../../WebScience/Utilities/Debugging.js"
-import * as Storage from "../../WebScience/Utilities/Storage.js"
-import * as Matching from "../../WebScience/Utilities/Matching.js"
-import * as PageEvents from "../../WebScience/Utilities/PageEvents.js"
+import * as Debugging from "../WebScience/Utilities/Debugging.js"
+import * as Storage from "../WebScience/Utilities/Storage.js"
+import * as Matching from "../WebScience/Utilities/Matching.js"
+import * as PageEvents from "../WebScience/Utilities/PageEvents.js"
 
 
 const debugLog = Debugging.getDebuggingLog("PageNavigation");
 
 
-var storage = null;
-var currentTabInfo = null;
-var urlMatcher = null;
+let storage = null;
+let currentTabInfo = null;
+let urlMatcher = null;
 
 /**
  * Start a navigation study. Note that only one study is supported per extension.
@@ -32,7 +32,7 @@ export async function runStudy({
 
     // Listen for metadata of the visited pages from content script
     // Use a unique identifier for each webpage the user visits that has a matching domain
-    var nextPageIdCounter = await (new Storage.Counter("PageNavigation.nextPageId")).initialize();
+    const nextPageIdCounter = await (new Storage.Counter("PageNavigation.nextPageId")).initialize();
 
     // Keep track of information about pages with matching domains that are currently loaded into a tab
     // If a tab ID is in this object, the page currently contained in that tab has a matching domain
@@ -80,7 +80,7 @@ export async function runStudy({
         // Otherwise create a copy of what we have remembered about the page visit,
         // remove the page from the current set of tracked pages, and save the copy
         // to storage
-        var tabInfoToSave = Object.assign({}, currentTabInfo[tabId]);
+        const tabInfoToSave = Object.assign({}, currentTabInfo[tabId]);
         tabInfoToSave.visitEnd = timeStamp;
         delete currentTabInfo[tabId];
 
@@ -90,8 +90,8 @@ export async function runStudy({
         storage.set(tabInfoToSave.pageId.toString(), tabInfoToSave);
     }
 
-    var inAttentionSpan = false;
-    var startOfCurrentAttentionSpan = -1;
+    let inAttentionSpan = false;
+    let startOfCurrentAttentionSpan = -1;
 
     // Handle when a page attention span starts
     function pageAttentionStartListener({tabId, timeStamp}) {
@@ -136,7 +136,7 @@ export async function runStudy({
 
     // Register the page visit listeners and, if needed for the study, the page attention listeners
     // Use a timestamp to synchronize initial page visit and page attention times
-    var timeStamp = Date.now();
+    const timeStamp = Date.now();
     PageEvents.registerPageVisitStartListener(pageVisitStartListener, true, privateWindows, timeStamp);
     PageEvents.registerPageVisitStopListener(pageVisitStopListener, privateWindows);
     if (trackUserAttention) {
@@ -157,20 +157,20 @@ export async function runStudy({
  * could be retrieved.
  */
 export async function getStudyDataAsObjectAndClear() {
-    let output = {};
-    let arr = [];
+    const output = {};
+    const arr = [];
 
     if (storage != null) {
 
         await storage.iterate((value, key, iterationNumber) => {
             if (value["visitEnd"] != -1) {
                 arr.push(key);
-                let tmp = JSON.stringify(value);
+                const tmp = JSON.stringify(value);
                 output[key] = tmp;
             }
         });
 
-        for (let v in arr) {
+        for (const v in arr) {
             storage.storageInstance.removeItem(arr[v]).then().catch(function (err) {
                 // This code runs if there were any errors
                 console.log(err);

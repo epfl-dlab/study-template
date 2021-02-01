@@ -1,6 +1,6 @@
-import * as Debugging from "../../WebScience/Utilities/Debugging.js"
-import * as Storage from "../../WebScience/Utilities/Storage.js"
-import * as Messaging from "../../WebScience/Utilities/Messaging.js"
+import * as Debugging from "../WebScience/Utilities/Debugging.js"
+import * as Storage from "../WebScience/Utilities/Storage.js"
+import * as Messaging from "../WebScience/Utilities/Messaging.js"
 
 const debugLog = Debugging.getDebuggingLog("YouTubeUsage");
 
@@ -10,7 +10,7 @@ const debugLog = Debugging.getDebuggingLog("YouTubeUsage");
  * @type {Object}
  * @private
  */
-var storage = null;
+let storage = null;
 
 /**
  * @name runStudy starts collecting navigational data on YouTube
@@ -26,7 +26,7 @@ export async function runStudy() {
     await browser.contentScripts.register({
         matches: ["*://*.youtube.com/*"],
         js: [
-            {file: "/src/content_scripts/clicksYouTube.js"},
+            {file: "/dist/cs_clicksYouTube.js"},
         ],
         runAt: "document_idle"
     });
@@ -50,10 +50,10 @@ export async function runStudy() {
 
     await browser.contentScripts.register({
         matches: ["*://*.youtube.com/*"],
-        js: [{file: "/src/content_scripts/frontpageYouTube.js"}],
+        js: [{file: "/dist/cs_frontpageYouTube.js"}],
         runAt: "document_start"
     });
-    var rxLookfor = /^https?:\/\/(www\.)?youtube\.com\/?$/;
+    const rxLookfor = /^https?:\/\/(www\.)?youtube\.com\/?$/;
     browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
             try {
                 if (rxLookfor.test(changeInfo.url)) {
@@ -80,7 +80,7 @@ export async function runStudy() {
     await browser.contentScripts.register({
         matches: ["*://*.youtube.com/*"],
         js: [
-            {file: "/src/content_scripts/videoMetadata.js"},
+            {file: "/dist/cs_videoMetadata.js"},
         ],
         runAt: "document_idle"
     });
@@ -115,7 +115,7 @@ export async function runStudy() {
     await browser.contentScripts.register({
         matches: ["*://*.youtube.com/*"],
         js: [
-            {file: "/src/content_scripts/recsYouTube.js"},
+            {file: "/dist/cs_recsYouTube.js"},
         ],
         runAt: "document_idle"
     });
@@ -140,7 +140,7 @@ export async function runStudy() {
     await browser.contentScripts.register({
         matches: ["*://*.youtube.com/*"],
         js: [
-            {file: "/src/content_scripts/comsYouTube.js"},
+            {file: "/dist/cs_comsYouTube.js"},
         ],
         runAt: "document_idle"
     });
@@ -164,7 +164,7 @@ export async function runStudy() {
     await browser.contentScripts.register({
         matches: ["*://*.youtube.com/*"],
         js: [
-            {file: "/src/content_scripts/searchYouTube.js"},
+            {file: "/dist/cs_searchYouTube.js"},
         ],
         runAt: "document_idle"
     });
@@ -189,19 +189,19 @@ export async function runStudy() {
  * could be retrieved.
  */
 export async function getStudyDataAsObjectAndClear() {
-    let output = {};
-    let arr = [];
+    const output = {};
+    const arr = [];
 
     if (storage != null) {
 
         await storage.iterate((value, key, iterationNumber) => {
             arr.push(key);
-            let tmp = JSON.stringify(value);
+            const tmp = JSON.stringify(value);
             output[key] = tmp;
 
         });
 
-        for (let v in arr) {
+        for (const v in arr) {
             // console.log("removed", arr[v]);
             storage.storageInstance.removeItem(arr[v]).then().catch(function (err) {
                 // This code runs if there were any errors

@@ -2,7 +2,7 @@
     async function () {
 
         function resizeObs() {
-            let ro = new ResizeObserver(entries => {
+            const ro = new ResizeObserver(entries => {
                 getSearch("resize")
             });
             ro.observe(document.body.querySelector("#contents"));
@@ -10,17 +10,17 @@
 
         function getSearch(origin = "load") {
 
-            let domLinkElements = Array.from(
+            const domLinkElements = Array.from(
                 document.body.querySelectorAll("#contents > ytd-video-renderer," +
                     "#contents > ytd-playlist-renderer,#contents > ytd-search-pyv-renderer," +
                     "#contents > ytd-channel-renderer"));
 
             function getContent(element) {
 
-                let is_video = element.querySelector("ytd-video-renderer") !== null;
-                let is_playlist = element.querySelector("ytd-playlist-renderer") !== null;
-                let is_sponsored = element.querySelector("ytd-pyv-renderer") !== null;
-                let is_channel = element.querySelector("ytd-pyv-renderer") !== null;
+                const is_video = element.querySelector("ytd-video-renderer") !== null;
+                const is_playlist = element.querySelector("ytd-playlist-renderer") !== null;
+                const is_sponsored = element.querySelector("ytd-pyv-renderer") !== null;
+                const is_channel = element.querySelector("ytd-pyv-renderer") !== null;
 
                 return {
                     "is_video": is_video,
@@ -31,11 +31,11 @@
                 }
             }
 
-            let url_src = window.location.href;
+            const url_src = window.location.href;
 
-            let searches = JSON.stringify(domLinkElements.map(x => getContent(x)));
+            const searches = JSON.stringify(domLinkElements.map(x => getContent(x)));
 
-            let loadTime = Date.now();
+            const loadTime = Date.now();
 
 
             sendSearchEvent(url_src, loadTime, searches, origin);

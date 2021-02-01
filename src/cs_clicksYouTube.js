@@ -1,7 +1,7 @@
 (
     async function () {
         console.log("clicksYouTube.js");
-        var currentPageClicksYouTube = null;
+        let currentPageClicksYouTube = null;
 
         document.body.addEventListener("mousedown", function (event) {
 
@@ -9,11 +9,11 @@
         });
 
         document.body.addEventListener("click", function (event) {
-            var url_src = currentPageClicksYouTube; //currentPageClicksYouTube;
-            let clickTime = Date.now();
-            var node = event.target;
-            var logged_off = document.body.querySelector("button#avatar-btn") === null;
-            var higher_local_name = node.localName;
+            const url_src = currentPageClicksYouTube; //currentPageClicksYouTube;
+            const clickTime = Date.now();
+            let node = event.target;
+            const logged_off = document.body.querySelector("button#avatar-btn") === null;
+            const higher_local_name = node.localName;
             while (node != undefined && node.localName != 'a') {
                 node = node.parentNode;
             }
